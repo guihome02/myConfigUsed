@@ -1,0 +1,54 @@
+version: '2'
+
+services:
+  db:
+    image: mariadb
+    container_name: db
+    restart: always
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql:rw
+    working_dir: /var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    working_dir: /www
+    ports:
+      - 8080:80
+    links:
+      - db:db
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+
+  php-7.2-apache:
+    build: php-7.2-apache
+    image: php-7.2-apache
+    container_name: php72
+    restart: always
+    volumes:
+      - /home/guihome/Workspace/:/var/www/html/
+      - /home/guihome/.composer:/home/guihome/.composer
+    working_dir: /var/www/html
+    
+    ports:
+      - 80:80
+
+      # Some IPs for the `php bin/console server:start 0.0.0.0:XXXXX` Symfony command.
+      - 50000:50000
+      - 50001:50001
+      - 50003:50003
+      - 50004:50004
+      - 50005:50005
+      - 50006:50006
+      - 50007:50007
+      - 50008:50008
+      - 50009:50009
+    links:
+      - db:mysql_database       
+  
